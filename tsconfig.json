@@ -1,0 +1,14 @@
+{
+	"ts-node": {
+		"transpileOnly": true,
+		"esm": true,
+		"compilerOptions": {
+			"module": "ESNext"
+		}
+	},
+
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"module": "ESNext"
+	}
+}
