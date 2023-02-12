@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync } from "fs"
+import { writeFileSync, readFileSync, read } from "fs"
 
 type Tokens = {
 	accessToken: string
@@ -7,12 +7,13 @@ type Tokens = {
 
 const { pathname: TOKEN_PATH } = new URL("tokens.json", import.meta.url)
 
-function saveTokens(tokens?: Tokens) {
+export function saveTokens(tokens?: Tokens) {
 	if (!tokens) {
 		const blankTokens: Tokens = {
 			accessToken: "",
 			refreshToken: "",
 		}
+
 		writeFileSync(TOKEN_PATH, JSON.stringify(blankTokens))
 		return
 	} else {
@@ -20,9 +21,15 @@ function saveTokens(tokens?: Tokens) {
 	}
 }
 
-function readTokens() {
-	const tokensString = readFileSync(TOKEN_PATH, { encoding: "utf-8" })
-	const tokenObject = JSON.parse(tokensString)
-	console.log(tokenObject)
+export function readTokens() {
+	try {
+		const tokensString = readFileSync(TOKEN_PATH, { encoding: "utf-8" })
+		const tokenObject = JSON.parse(tokensString)
+		return tokenObject
+	} catch (error) {
+		saveTokens()
+		return null
+	}
 }
+
 readTokens()

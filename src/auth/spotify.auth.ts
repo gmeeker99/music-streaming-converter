@@ -1,5 +1,3 @@
-import * as dotenv from "dotenv"
-dotenv.config()
 import queryString from "query-string"
 import { Scope } from "./spotifyScope"
 
