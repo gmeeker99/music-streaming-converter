@@ -21,10 +21,11 @@ export async function testAuthorization() {
 async function getSpotifyAuthorization(scopeOptions: Scope) {
 	const requestAuthUrl = buildSpotifyAuthorizationUrl(scopeOptions)
 	await open(requestAuthUrl)
+
 	const { pathname: serverPath } = new URL("authServer.ts", import.meta.url)
 	const child = fork(serverPath)
-	child.on("exit", code => {
-		console.log("code gotten", code)
+	child.on("exit", () => {
+		console.log(`Server killed - PID: ${child.pid} Closed`)
 	})
 }
 
