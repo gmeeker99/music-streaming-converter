@@ -1,20 +1,27 @@
 import express from "express"
+import { getSpotifyTokens } from "./spotify.auth.js"
 import { writeTokens } from "./tokenFile.js"
 
 const PORT = 3000
 
 const app = express()
 
-app.get("/callback", (req, res) => {
+app.get("/callback", async (req, res) => {
 	const { code } = req.query
-	const accessToken = String(code)
+	const authToken = String(code)
 
 	writeTokens({
-		accessToken,
+		authToken,
+		accessToken: "",
 		refreshToken: "",
 	})
 
-	res.send("success")
+	try {
+		const results = await getSpotifyTokens()
+		res.send(results)
+	} catch (e) {
+		res.send(e)
+	}
 
 	process.exit(0)
 })

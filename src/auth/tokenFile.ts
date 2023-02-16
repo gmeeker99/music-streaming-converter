@@ -1,6 +1,7 @@
 import { writeFileSync, readFileSync } from "fs"
 
 type Tokens = {
+	authToken: string
 	accessToken: string
 	refreshToken: string
 }
@@ -10,6 +11,7 @@ const { pathname: TOKEN_PATH } = new URL("tokens.json", import.meta.url)
 export function writeTokens(tokens?: Tokens) {
 	if (!tokens) {
 		const blankTokens: Tokens = {
+			authToken: "",
 			accessToken: "",
 			refreshToken: "",
 		}
@@ -31,5 +33,3 @@ export function readTokens() {
 		return null
 	}
 }
-
-readTokens()
