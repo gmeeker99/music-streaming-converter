@@ -10,7 +10,7 @@ const CALLBACK_URI = "http://localhost:3000/callback"
 export async function isClientAuthorized() {
 	const { accessToken, refreshToken } = readTokens()
 
-	// TODO: this is just a test to see if there access/refresh tokens and if they work
+	// ** this is just a test to see if there access/refresh tokens and if they work
 
 	if (!accessToken || !refreshToken) {
 		return false
@@ -57,21 +57,4 @@ export async function getSpotifyTokens() {
 		accessToken: data.access_token,
 		refreshToken: data.refresh_token,
 	})
-}
-
-function buildSpotifyAuthorizationUrl(scopeOptions: Scope) {
-	const scope = scopeOptions.join(" ")
-
-	let authorizationUrl = "https://accounts.spotify.com/authorize?"
-
-	const query = queryString.stringify({
-		client_id: process.env.SPOTIFY_CLIENT_ID,
-		response_type: "code",
-		redirect_uri: CALLBACK_URI,
-		scope: scope,
-		show_dialog: true,
-	})
-
-	authorizationUrl += query
-	return authorizationUrl
 }
