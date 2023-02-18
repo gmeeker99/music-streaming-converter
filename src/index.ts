@@ -30,8 +30,7 @@ function initialize() {
 
 	const server = fork(pathToFile)
 	server.on("message", async authToken => {
-		const tokens = await spotifyAuthClient.getTokens(authToken as string)
-		writeTokens({ spotifyTokens: tokens })
+		await spotifyAuthClient.getTokens(authToken as string)
 	})
 
 	return new Promise((resolve, reject) => {})
@@ -39,6 +38,7 @@ function initialize() {
 
 // await initialize()
 spotifyAuthClient.getTracks(50, 10)
+// spotifyAuthClient.refreshTokens()
 
 // .then(() => {
 // })

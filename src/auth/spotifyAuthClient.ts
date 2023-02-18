@@ -1,6 +1,6 @@
 import queryString from "query-string"
 import axios from "axios"
-import { readTokens } from "./jsonTokens.js"
+import { readTokens, Tokens, writeTokens } from "./jsonTokens.js"
 
 type ScopeOptions =
 	| "ugc-image-upload"
@@ -61,29 +61,65 @@ export function createSpotifyAuth(clientId: string, clientSecret: string, callba
 				"Content-Type": "application/x-www-form-urlencoded",
 			}
 
-			const { data: tokens } = await axios.post(
-				"https://accounts.spotify.com/api/token",
-				body,
-				{
-					headers,
-				}
-			)
-			return tokens
+			const { data } = await axios.post("https://accounts.spotify.com/api/token", body, {
+				headers,
+			})
+
+			const tokens: Tokens = {
+				accessToken: data.access_token,
+				refreshToken: data.refresh_token,
+			}
+
+			writeTokens("spotify", tokens)
 		},
 
 		async getTracks(limit: number, offset: number) {
 			const url = "https://api.spotify.com/v1/me/tracks"
 
-			const { spotifyTokens } = readTokens()
+			const { accessToken } = readTokens("spotify")
 
 			const headers = {
 				Accept: "application/json",
 				"Content-Type": "application/json",
-				Authorization: "Bearer " + spotifyTokens.access_token,
+				Authorization: "Bearer " + accessToken,
+			}
+			try {
+				const { data } = await axios.get(url, { headers })
+				console.log(data.items)
+			} catch (e) {
+				console.log(e.response.data)
+			}
+		},
+
+		async refreshTokens() {
+			const url = "https://accounts.spotify.com/api/token"
+
+			const { refresh_token } = readTokens("spotify")
+
+			const body = queryString.stringify({
+				grant_type: "refresh_token",
+				refresh_token,
+			})
+
+			let clientCreds =
+				"Basic " + Buffer.from(this.clientId + ":" + this.clientSecret).toString("base64")
+
+			const headers = {
+				Authorization: clientCreds,
+				"Content-Type": "application/x-www-form-urlencoded",
 			}
 
-			const { data } = await axios.get(url, { headers })
-			console.log(data.items)
+			const { data } = await axios.post(url, body, { headers })
+
+			const tokens: Tokens = {
+				accessToken: data.access_token,
+			}
+
+			if (data.refresh_token) {
+				tokens.refreshToken = data.refresh_token
+			}
+
+			writeTokens("spotify", tokens)
 		},
 	}
 
