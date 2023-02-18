@@ -1,6 +1,5 @@
 import express from "express"
-import { getSpotifyTokens } from "./spotify.auth.js"
-import { writeTokens } from "./tokenFile.js"
+import { writeTokens } from "./jsonTokens.js"
 
 const PORT = 3000
 
@@ -8,21 +7,11 @@ const app = express()
 
 app.get("/callback", async (req, res) => {
 	const { code } = req.query
-	const authToken = String(code)
+	const authToken = code as string
+	res.json({ status: "success" })
 
-	writeTokens({
-		authToken,
-		accessToken: "",
-		refreshToken: "",
-	})
-
-	try {
-		const results = await getSpotifyTokens()
-		res.send(results)
-	} catch (e) {
-		res.send(e)
-	}
-
+	process.send(authToken)
+	console.log(`Server Killed on port ${PORT} on PID: ${process.pid}`)
 	process.exit(0)
 })
 
