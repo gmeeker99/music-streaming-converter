@@ -37,7 +37,8 @@ function initialize() {
 	return new Promise((resolve, reject) => {})
 }
 
-await initialize()
+// await initialize()
+spotifyAuthClient.getTracks(50, 10)
 
 // .then(() => {
 // })

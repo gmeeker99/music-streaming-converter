@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile"
+import { CLIENT_RENEG_WINDOW } from "tls"
 
 type ServiceTokens =
 	| {
@@ -10,10 +11,14 @@ type ServiceTokens =
 
 export function writeTokens(tokens: ServiceTokens) {
 	console.log("🚀 ~ tokens", tokens)
-	const currentTokens = jsonfile.readFileSync("./src/auth/tokens.json")
+	const currentTokens = readTokens()
 	const newTokens = {
 		...tokens,
 		...currentTokens,
 	}
 	jsonfile.writeFileSync("./src/auth/tokens.json", newTokens)
+}
+
+export function readTokens() {
+	return jsonfile.readFileSync("./src/auth/tokens.json")
 }

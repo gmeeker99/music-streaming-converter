@@ -1,5 +1,6 @@
 import queryString from "query-string"
 import axios from "axios"
+import { readTokens } from "./jsonTokens.js"
 
 type ScopeOptions =
 	| "ugc-image-upload"
@@ -68,6 +69,21 @@ export function createSpotifyAuth(clientId: string, clientSecret: string, callba
 				}
 			)
 			return tokens
+		},
+
+		async getTracks(limit: number, offset: number) {
+			const url = "https://api.spotify.com/v1/me/tracks"
+
+			const { spotifyTokens } = readTokens()
+
+			const headers = {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer " + spotifyTokens.access_token,
+			}
+
+			const { data } = await axios.get(url, { headers })
+			console.log(data.items)
 		},
 	}
 
