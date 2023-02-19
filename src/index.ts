@@ -37,22 +37,22 @@ function initialize() {
 
 // await initialize()
 // await spotifyAuthClient.refreshTokens()
-const tracks: any = await spotifyAuthClient.getTracks(1, 0)
-console.log(JSON.stringify(tracks))
+const tracks: any = await spotifyAuthClient.getTracks(50, 0)
+// console.log(JSON.stringify(tracks))
 let trackArray = []
 
-// tracks.forEach(track => {
-// 	const object = {
-// 		addedAt: track.added_at,
-// 		artist: track.artist.name,
-// 		// album: track.album.name,
-// 		// name: track.name,
-// 		// trackId: track.id,
-// 		// url: track.external_urls.spotify,
-// 	}
-// 	trackArray.push(object)
-// })
-// console.log(JSON.stringify(trackArray))
+tracks.forEach(track => {
+	const object = {
+		addedAt: track.added_at,
+		artist: track.track.artists[0].name,
+		album: track.track.album.name,
+		name: track.track.name,
+		trackId: track.track.id,
+		url: track.track.external_urls.spotify,
+	}
+	trackArray.push(object)
+})
+console.log(JSON.stringify(trackArray))
 // spotifyAuthClient.refreshTokens()
 
 // .then(() => {
