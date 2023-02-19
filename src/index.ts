@@ -1,17 +1,16 @@
 import dotenv from "dotenv"
 dotenv.config()
-import { createSpotifyAuth } from "./auth/spotifyAuthClient.js"
+import { SpotifyAuthClient } from "./auth/spotifyAuthClient.js"
 import open from "open"
 import { fork } from "child_process"
 import path from "path"
 import * as url from "url"
-import { writeTokens } from "./auth/jsonTokens.js"
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 
 const CALLBACK_URL = "http://localhost:3000/callback"
 
-const spotifyAuthClient = createSpotifyAuth(
+const spotifyAuthClient = new SpotifyAuthClient(
 	process.env.SPOTIFY_CLIENT_ID,
 	process.env.SPOTIFY_CLIENT_SECRET,
 	CALLBACK_URL
@@ -37,7 +36,23 @@ function initialize() {
 }
 
 // await initialize()
-spotifyAuthClient.getTracks(50, 10)
+// await spotifyAuthClient.refreshTokens()
+const tracks: any = await spotifyAuthClient.getTracks(1, 0)
+console.log(JSON.stringify(tracks))
+let trackArray = []
+
+// tracks.forEach(track => {
+// 	const object = {
+// 		addedAt: track.added_at,
+// 		artist: track.artist.name,
+// 		// album: track.album.name,
+// 		// name: track.name,
+// 		// trackId: track.id,
+// 		// url: track.external_urls.spotify,
+// 	}
+// 	trackArray.push(object)
+// })
+// console.log(JSON.stringify(trackArray))
 // spotifyAuthClient.refreshTokens()
 
 // .then(() => {

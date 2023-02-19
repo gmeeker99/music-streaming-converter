@@ -1,5 +1,4 @@
 import express from "express"
-import { writeTokens } from "./jsonTokens.js"
 
 const PORT = 3000
 
