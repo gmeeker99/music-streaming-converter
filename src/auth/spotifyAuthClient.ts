@@ -78,7 +78,7 @@ export class SpotifyAuthClient {
 		writeTokens("spotify", tokens)
 	}
 
-	private async refreshTokens() {
+	async refreshTokens() {
 		const url = "https://accounts.spotify.com/api/token"
 
 		const { refreshToken } = readTokens("spotify")
@@ -131,12 +131,10 @@ export class SpotifyAuthClient {
 			const { data } = await axios.get(url, { headers })
 			return data.items
 		} catch (e) {
-			console.log(e.response.data)
-			// if (e.response.data.error.status === 401) {
-			// 	console.log(e)
-			// 	await this.refreshTokens()
-			// 	await this.getTracks(tracks, offset)
-			// }
+			if (e.response.data.error.status === 401) {
+				console.log(e.response.data)
+				return null
+			}
 		}
 	}
 }

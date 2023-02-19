@@ -5,6 +5,7 @@ import open from "open"
 import { fork } from "child_process"
 import path from "path"
 import * as url from "url"
+import jsonfile from "jsonfile"
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 
@@ -37,22 +38,33 @@ function initialize() {
 
 // await initialize()
 // await spotifyAuthClient.refreshTokens()
-const tracks: any = await spotifyAuthClient.getTracks(50, 0)
-// console.log(JSON.stringify(tracks))
-let trackArray = []
 
-tracks.forEach(track => {
-	const object = {
-		addedAt: track.added_at,
-		artist: track.track.artists[0].name,
-		album: track.track.album.name,
-		name: track.track.name,
-		trackId: track.track.id,
-		url: track.track.external_urls.spotify,
-	}
-	trackArray.push(object)
-})
-console.log(JSON.stringify(trackArray))
+for (let i = 0; i < 5; i++) {
+	let trackArray = []
+	let offset = i * 50
+
+	const tracks: any = await spotifyAuthClient.getTracks(50, offset)
+
+	tracks.forEach((track, index) => {
+		const object = {
+			index: index + offset,
+			addedAt: track.added_at,
+			artist: track.track.artists[0].name,
+			album: track.track.album.name,
+			name: track.track.name,
+			trackId: track.track.id,
+			url: track.track.external_urls.spotify,
+		}
+		trackArray.push(object)
+	})
+
+	const file = jsonfile.readFileSync("./logs/log.json")
+
+	const obj = [...file, ...trackArray]
+	jsonfile.writeFileSync("./logs/log.json", obj)
+}
+
+// console.log(JSON.stringify(trackArray))
 // spotifyAuthClient.refreshTokens()
 
 // .then(() => {
